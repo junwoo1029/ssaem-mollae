@@ -1,0 +1,263 @@
+<canvas id="gl" hidden></canvas>
+
+<!-- 홈 -->
+<section id="home" class="screen solid">
+  <header class="hometop">
+    <div class="brand">
+      <div class="logo">쌤<b>몰래</b></div>
+      <p class="tag">쉬는 시간에 한 판. 인기순으로 정렬된 게임을 골라 보세요.</p>
+      <button class="card cut reccard wide" id="recCard" aria-label="추천 게임"></button>
+    </div>
+    <div class="topright">
+      <div class="card cut logincard" id="loginCard"></div>
+      <button class="iconbtn" data-act="settings" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    </div>
+  </header>
+  <div class="gamehead"><h2>게임 <span>인기순</span></h2><span class="label" id="playsNote">플레이 수 기준</span></div>
+  <div class="gamegrid" id="gameGrid"></div>
+</section>
+
+<!-- 게임 2: 블록 낙하 -->
+<section id="blocks" class="bkscreen" hidden>
+  <canvas id="bkBg" aria-hidden="true"></canvas>
+  <header class="bktop">
+    <button class="back" data-act="home">‹ 게임 목록</button>
+    <div class="logo" style="font-size:22px">블록 <b>낙하</b></div>
+    <div class="spacer"></div>
+    <button class="iconbtn" data-act="settings" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></button><button class="iconbtn" data-bk="pause" aria-label="일시정지"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></button>
+  </header>
+  <div class="bkwrap">
+    <aside class="bkside bkl">
+      <div class="bkbox"><div class="label">HOLD</div><canvas id="bkHold" width="160" height="110"></canvas></div>
+      <div class="bkbox bkstats">
+        <div><span class="label">점수</span><b id="bkScore">0</b></div>
+        <div><span class="label">레벨</span><b id="bkLevel">1</b></div>
+        <div><span class="label">줄</span><b id="bkLines">0</b></div>
+      </div>
+      <div class="bkbox bkrec">
+        <div class="label">최고 점수</div><div class="bktopnum" id="bkTop">—</div><div class="bktopwho" id="bkTopWho">아직 기록 없음</div>
+        <div class="label" style="margin-top:8px">내 최고</div><div class="bkmine" id="bkMine">—</div>
+      </div>
+    </aside>
+    <div class="bkboardwrap"><canvas id="bkBoard"></canvas><div class="bkbanner" id="bkBanner"></div><div class="bkpop" id="bkPop"></div></div>
+    <aside class="bkside bkr">
+      <div class="bkbox"><div class="label">NEXT</div><canvas id="bkNext" width="160" height="400"></canvas></div>
+      <div class="bkkeys"><kbd>←</kbd><kbd>→</kbd> 이동<br><kbd>↑</kbd> 또는 <kbd>Z</kbd> 회전<br><kbd>↓</kbd> 내리기<br><kbd>SPACE</kbd> 한 번에 내려찍기<br><kbd>C</kbd> 바꾸기(홀드)<br><kbd>ESC</kbd> 정지</div>
+    </aside>
+  </div>
+  <div class="bktouch" id="bkTouch">
+    <button class="bt" data-bt="left" aria-label="왼쪽">◀</button>
+    <button class="bt" data-bt="right" aria-label="오른쪽">▶</button>
+    <button class="bt" data-bt="soft" aria-label="빨리 내리기">▼</button>
+    <button class="bt hold" data-bt="hold">바꾸기</button>
+    <button class="bt rot" data-bt="cw" aria-label="회전">⟳</button>
+    <button class="bt drop" data-bt="hard">내려찍기</button>
+  </div>
+  <div class="overlay bkov" id="bkStart">
+    <div class="modal cut">
+      <div class="label">GAME 2 · FALLING BLOCKS</div>
+      <h3 style="margin:4px 0 6px">블록 낙하</h3>
+      <p class="bkdesc">줄을 꽉 채우면 사라져요. 8줄마다 레벨이 오르고 블록이 빨라지며 배경도 바뀌어요.</p>
+      <div class="bkrank" id="bkRank"><div class="empty">랭킹 불러오는 중…</div></div>
+      <div class="row" style="margin-top:14px"><button class="btn primary" data-bk="start" style="flex:1">시작 (Enter)</button></div>
+    </div>
+  </div>
+  <div class="overlay bkov" id="bkPause" hidden><div class="modal cut"><h3>일시정지</h3><div class="row" style="flex-direction:column;gap:10px">
+    <button class="btn primary" data-bk="resume">계속하기</button><button class="btn ghost" data-bk="restart">처음부터</button><button class="btn ghost" data-act="settings">설정</button><button class="btn ghost" data-act="home">게임 목록으로</button></div></div></div>
+  <div class="overlay bkov" id="bkOver" hidden><div class="modal cut result">
+    <div class="label">GAME OVER</div>
+    <div class="laptime" id="bkFinal">0</div>
+    <div class="badges" id="bkBadges"></div>
+    <div class="rlist" id="bkList"></div>
+    <div class="row"><button class="btn primary" data-bk="restart">다시하기</button><button class="btn ghost" data-act="home">나가기</button></div>
+  </div></div>
+</section>
+
+<!-- 게임 3: 2048 -->
+<section id="g48" class="gscreen g48screen" hidden>
+  <header class="bktop"><button class="back" data-act="home">‹ 게임 목록</button><div class="logo" style="font-size:22px">20<b>48</b></div><div class="spacer"></div><button class="btn ghost sm" data-g4="new">새 게임</button><button class="iconbtn" data-act="settings" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></button></header>
+  <div class="g4wrap">
+    <div class="g4main">
+      <div class="g4stats">
+        <div class="g4stat" id="g4ScoreBox"><span class="label">점수</span><b id="g4Score">0</b></div>
+        <div class="g4stat"><span class="label">내 최고</span><b id="g4Best">—</b></div>
+        <div class="g4stat"><span class="label">최고 타일</span><b id="g4Max">—</b></div>
+        <div class="g4stat g4topbox"><span class="label">1위</span><b id="g4Top">—</b><small id="g4TopWho">기록 없음</small></div>
+      </div>
+      <div class="g4board" id="g4Board"><div class="g4cells"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="g4tiles" id="g4Tiles"></div></div>
+      <div class="g4pad" id="g4Pad" hidden><button data-dir="0" aria-label="위">▲</button><button data-dir="3" aria-label="왼쪽">◀</button><button data-dir="2" aria-label="아래">▼</button><button data-dir="1" aria-label="오른쪽">▶</button></div>
+      <p class="g4hint">화살표·WASD 또는 판을 밀어서 움직여요. 같은 숫자가 부딪히면 합쳐져요.</p>
+    </div>
+    <aside class="g4side"><div class="label" style="margin-bottom:8px">랭킹 TOP 20</div><div class="bkrank" id="g4Rank"></div></aside>
+  </div>
+  <div class="overlay bkov" id="g4Over" hidden><div class="modal cut result">
+    <div class="label" id="g4OverT">GAME OVER</div><div class="laptime" id="g4Final">0</div><div class="badges" id="g4Badges"></div><div class="rlist" id="g4List"></div>
+    <div class="row"><button class="btn primary" data-g4="continue" id="g4Continue" hidden>계속하기</button><button class="btn primary" data-g4="new">새 게임</button><button class="btn ghost" data-act="home">나가기</button></div>
+  </div></div>
+</section>
+
+<!-- 게임 4: 반응 속도 -->
+<section id="react" class="gscreen rxscreen" hidden>
+  <header class="bktop"><button class="back" data-act="home">‹ 게임 목록</button><div class="logo" style="font-size:22px">출발 <b>반응</b></div><div class="spacer"></div><span class="chip"><i></i>F1 START</span><button class="iconbtn" data-act="settings" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></button></header>
+  <div class="rxwrap">
+    <div class="rxarea" id="rxArea" role="button" aria-label="반응 버튼" tabindex="0">
+      <div class="rxgantry"><div class="rxbar"></div><div class="rxlights" id="rxLights"><div class="rxpod"><i class="off"></i><i class="off"></i><i></i><i></i></div><div class="rxpod"><i class="off"></i><i class="off"></i><i></i><i></i></div><div class="rxpod"><i class="off"></i><i class="off"></i><i></i><i></i></div><div class="rxpod"><i class="off"></i><i class="off"></i><i></i><i></i></div><div class="rxpod"><i class="off"></i><i class="off"></i><i></i><i></i></div></div></div>
+      <div class="rxbig" id="rxBig">누르면 시작</div>
+      <div class="rxsmall" id="rxSmall">Space·Enter·아무 곳이나 탭</div>
+      <div class="rxtries" id="rxTries"></div>
+      <div class="rxnote" id="rxNote"></div>
+    </div>
+    <aside class="rxside">
+      <div class="bkbox"><div class="label">1위</div><div class="bktopnum" id="rxTop">—</div><div class="bktopwho" id="rxTopWho">기록 없음</div></div>
+      <div class="bkbox rxgrid"><div><span class="label">내 최고</span><b id="rxMine">—</b></div><div><span class="label">이번 최고</span><b id="rxSess">—</b></div><div><span class="label">최근 5회 평균</span><b id="rxAvg">—</b></div></div>
+      <div class="bkbox"><div class="label" style="margin-bottom:6px">랭킹 TOP 20</div><div class="bkrank" id="rxRank"></div></div>
+      <div class="rxinfo">실제 F1 드라이버의 출발 반응은 약 0.15~0.2초예요. 100ms보다 빠르면 예측 출발로 보고 무효 처리해요.</div>
+    </aside>
+  </div>
+</section>
+
+<!-- 서킷 선택 -->
+<section id="tracks" class="screen solid" hidden>
+  <header class="topbar">
+    <button class="back" data-act="home">‹ 게임 목록</button>
+    <div class="logo" style="font-size:22px">서킷 선택</div>
+    <div class="spacer"></div>
+    <button class="btn ghost sm" id="editBtn" data-act="edit-layout" hidden>배치 편집</button>
+    <span class="chip" id="userChip2"></span><button class="iconbtn" data-act="settings" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></button>
+  </header>
+  <div class="tracks">
+    <div class="strip" id="strip"></div>
+    <div class="detail">
+      <div class="mappanel cut">
+        <div class="head">
+          <div><div class="label" id="dEn">TRACK</div><h2 id="dName">서킷을 고르세요</h2><div class="place" id="dPlace">위 카드에서 서킷을 누르면 레이아웃과 기록이 나타납니다.</div></div>
+        </div>
+        <div class="bigmap" id="bigmap"></div>
+        <div class="stats" id="dStats"></div>
+      </div>
+      <div class="rankpanel cut">
+        <div class="record">
+          <div class="label">트랙 레코드</div>
+          <div class="t" id="recTime">--:--.---</div>
+          <div class="who" id="recWho">아직 기록이 없습니다</div>
+        </div>
+        <div class="rank" id="rank"><div class="empty">서킷을 고르면 상위 20위 랭킹이 표시됩니다.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="startbar"><button class="startbtn cut" id="startBtn" data-act="to-garage" disabled>시작 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l12 8-12 8z"/></svg></button></div>
+</section>
+
+<!-- 배치 편집기 -->
+<section id="editor" class="edscreen" hidden>
+  <header class="edtop">
+    <button class="back" data-ed="close">나가기</button>
+    <div class="logo" style="font-size:20px" id="edTitle">배치 편집</div>
+    <div class="spacer"></div>
+    <label class="chk"><input type="checkbox" id="edAutoTrees"> 자동 나무</label>
+    <label class="chk"><input type="checkbox" id="edAutoCity"> 자동 건물</label>
+    <button class="btn ghost sm" data-ed="reset">기본 배치</button>
+    <button class="btn ghost sm" data-ed="clear">모두 지우기</button>
+    <button class="btn primary sm" data-ed="save">저장</button>
+  </header>
+  <div class="edbody">
+    <aside class="edpal" id="edPalette"></aside>
+    <div class="edmap"><canvas id="edCanvas"></canvas><div class="edzoom"><button class="iconbtn" data-ed="zin" aria-label="확대">+</button><button class="iconbtn" data-ed="zout" aria-label="축소">−</button></div></div>
+    <aside class="edprops" id="edProps"></aside>
+  </div>
+</section>
+
+<!-- 차고 -->
+<section id="garage" class="garage-ui" hidden>
+  <header class="topbar">
+    <button class="back" data-act="tracks" style="background:rgba(10,12,15,.6)">‹ 서킷</button>
+    <div class="logo" style="font-size:22px">차고</div>
+    <div class="spacer"></div>
+    <span class="chip" id="gTrack"></span><button class="iconbtn" data-act="settings" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></button>
+  </header>
+  <div class="hint">드래그해서 차를 돌려 볼 수 있어요</div>
+  <div class="carinfo cut">
+    <div class="mk">SMR MOTORS · 2.0 TURBO</div>
+    <h2>SMR-1 터보</h2>
+    <div class="spec" id="spec"></div>
+    <div class="paints" id="paints"></div>
+  </div>
+  <div class="carnav">
+    <button class="iconbtn" disabled aria-label="이전 차"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="nm">1 / 1<small>차량은 계속 추가 예정</small></div>
+    <button class="iconbtn" disabled aria-label="다음 차"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
+  <button class="startbtn cut pickbtn" id="pickBtn" data-act="pick-car">이 차로 출발 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l12 8-12 8z"/></svg></button>
+</section>
+
+<!-- 레이스 HUD -->
+<section id="hud" class="hud" hidden>
+  <div class="mini"><canvas id="mini" width="340" height="340" style="width:100%;height:100%"></canvas><div class="tn" id="miniName"></div></div>
+  <div class="lights" id="lights"><div class="pod"><i></i><i></i></div><div class="pod"><i></i><i></i></div><div class="pod"><i></i><i></i></div><div class="pod"><i></i><i></i></div><div class="pod"><i></i><i></i></div></div>
+  <div class="timer">
+    <div class="label" style="text-align:right">LAP TIME</div>
+    <div class="now" id="tNow">0:00.000</div>
+    <div class="ln"><span>내 최고</span><b class="pb" id="tPb">--:--.---</b></div>
+    <div class="ln"><span>트랙 레코드</span><b class="tr" id="tTr">--:--.---</b></div>
+    <div class="secs"><div id="sc0"><span>S1</span><b>--.---</b></div><div id="sc1"><span>S2</span><b>--.---</b></div><div id="sc2"><span>S3</span><b>--.---</b></div></div>
+  </div>
+  <div class="hudbtns">
+    <button class="iconbtn pe" data-act="cam" aria-label="시점 전환" title="시점 (C)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    <button class="iconbtn pe" data-act="pause" aria-label="일시정지" title="일시정지 (Esc)"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></button>
+  </div>
+  <div class="center-msg" id="cmsg">GO</div>
+  <div class="warn" id="warn">트랙 이탈</div>
+  <div class="speedo">
+    <div><div class="rpm" id="rpm"></div><div style="display:flex;align-items:flex-end;gap:8px"><div class="spd" id="spd">0</div><div class="u">KM/H</div></div><div class="boostbar" id="boostbar"><i id="boostfill"></i></div></div>
+    <div style="text-align:center"><div class="u">GEAR</div><div class="gear" id="gear">1</div></div>
+  </div>
+  <div class="keys"><kbd>W</kbd> 가속 <kbd>S</kbd> 브레이크·후진 <kbd>A</kbd><kbd>D</kbd> 조향<br><kbd>SPACE</kbd> 바퀴 잠금 (+좌우 = 드리프트) <kbd>SHIFT</kbd> 부스트<br><kbd>C</kbd> 시점 <kbd>R</kbd> 트랙 복귀 <kbd>ESC</kbd> 정지</div>
+  <div class="touch" id="touch" hidden>
+    <div class="tb left" data-k="left"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 5l-8 7 8 7z"/></svg></div>
+    <div class="tb right" data-k="right"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 5l8 7-8 7z"/></svg></div>
+    <div class="tb reset" data-k="reset">복귀</div>
+    <div class="tb gas" data-k="thr">가속</div>
+    <div class="tb brake" data-k="back">브레이크<br><small>후진</small></div>
+    <div class="tb back" data-k="lock">드리프트</div>
+    <div class="tb boost" data-k="boost">부스트</div>
+  </div>
+</section>
+
+<div class="overlay" id="resultOv" hidden>
+  <div class="modal cut result">
+    <div class="label" id="rTrack">TRACK</div>
+    <div class="laptime" id="rTime">0:00.000</div>
+    <div class="badges" id="rBadges"></div>
+    <div class="rlist" id="rList"></div>
+    <div class="row"><button class="btn primary" data-act="retry">다시하기</button><button class="btn ghost" data-act="exit">나가기</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="pauseOv" hidden>
+  <div class="modal cut">
+    <h3>일시정지</h3>
+    <div class="row" style="flex-direction:column;gap:10px">
+      <button class="btn primary" data-act="resume">계속하기</button>
+      <button class="btn ghost" data-act="retry">처음부터 다시</button>
+      <button class="btn ghost" data-act="settings">설정</button>
+      <button class="btn ghost" data-act="exit">서킷 선택으로 나가기</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="settingsOv" hidden>
+  <div class="modal cut setmodal">
+    <div class="sethead"><h3>설정 <span class="label" id="setFor"></span></h3><button class="iconbtn sm" data-act="close-settings" aria-label="닫기">✕</button></div>
+    <div class="settabs" id="setTabs"></div>
+    <div id="setBody"></div>
+    <button class="btn primary" style="width:100%;margin-top:14px" data-act="close-settings">완료</button>
+  </div>
+</div>
+
+<div class="overlay" id="profileOv" hidden>
+  <div class="modal cut profmodal" id="profBody"></div>
+</div>
+
+<div class="loading" id="loading" hidden><div class="box"><div class="label" id="lEn"></div><div class="t" id="lName"></div><div class="s" id="lTip"></div><div class="bar"><i></i></div></div></div>
+<div class="flash" id="flash"></div>
+<div class="toast" id="toast"></div>
